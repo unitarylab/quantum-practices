@@ -1,0 +1,88 @@
+{
+  "name": "dsh-unitarylab-quantum-practices",
+  "version": "0.1.0",
+  "description": "Quantum Algorithms Best Practices tool bundle for DeepSeek Harness",
+  "private": true,
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/types/index.d.ts",
+  "license": "MIT",
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "scripts": {
+    "generate": "node scripts/generate-skill-catalog.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "npm run generate && tsc -p tsconfig.json",
+    "test": "vitest run tests",
+    "verify:package": "node scripts/verify-package.mjs",
+    "check": "npm run typecheck && npm test && npm run build && npm run verify:package"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-tools": ">=0.0.1-rc.1 <0.2.0"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "4.0.1",
+    "@deepseek-ai/dsh-tools": "0.1.0-rc.6",
+    "@types/node": "^24.0.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "dshWorkshop": {
+    "schema": "omdsh-workshop-package/v1",
+    "type": "plugin",
+    "integration": {
+      "protocol": "harness-profile",
+      "artifact": "package.json"
+    },
+    "install": {
+      "mode": "transactional",
+      "adapter": "profile-bundle",
+      "failurePolicy": "generation-rollback",
+      "touchesCurrentBeforeActivation": false
+    },
+    "lifecycle": {
+      "activation": "restart-profile",
+      "dispose": "unknown"
+    },
+    "permissions": [
+      "harness:tool",
+      "catalog:read",
+      "network:none",
+      "filesystem:none",
+      "subprocess:none",
+      "shell:none",
+      "python:none",
+      "credentials:none",
+      "native-code:none"
+    ],
+    "evidence": {
+      "install": "docs/OMDSH_REVIEW.md",
+      "failureIsolation": null,
+      "hotReload": null,
+      "remove": null
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "src",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ]
+}
